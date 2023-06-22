@@ -1,18 +1,70 @@
-const display = document.querySelector('.display-numbers');
-const btn1 = document.getElementById('btn-1')
-const btn2 = document.querySelector('btn-2')
-const numBtns = document.querySelectorAll('numb-btn');
+const body = document.querySelector('body');
+const screenDisplay = document.querySelector('.numbers-display')
+const numBtn = document.querySelectorAll('.numb-btn');
+const operatorBtn = document.querySelectorAll('.operator')
+const clearBtn = document.querySelector('.clear');
 
-btn1.addEventListener('click', () => {
-    display.textContent = btn1.textContent;
+
+let firstOperand = '';
+let secondOperand = '';
+let operator = '';
+let isOpPressed = false;
+
+clearBtn.addEventListener('click', clear);
+operatorBtn.forEach(opBtn =>{
+    opBtn.addEventListener('click', function(e) {
+        operator = e.target.textContent;
+        console.log(operator)
+    })
 })
-btn2.addEventListener('click', () => {
-    display.textContent = btn2.textContent;
-})
+
+window.onload = () => {screenDisplay.textContent = "0"};
+
+numBtn.forEach(btn => { btn.addEventListener('click', function(e) {
+    inputNumber(e.target.value);
+    })
+});
+
+function inputNumber(number) {
+    let screenNumber = screenDisplay.textContent;
+    if (screenNumber.length < 12)
+    screenDisplay.textContent = parseInt(screenDisplay.textContent+=number).toString(); // it doesnt work if you assign a variable to screenDisplay.innerHTML;
+   // parseInt to get rid of 0
+    //if(isOpPressed == true);
+};
+
+// //function setOperator(e) {
+//     firstOperand = screenDisplay.textContent;
+//     console.log(firstOperand)
+//     operator = e.target.class;
+//     console.log(operator);
+// }
+
+function clear() {
+    screenDisplay.textContent = '0';
+    firstOperand = '';
+    secondOperand = '';
+}
 
 
 
-let numb1, operator, numb2;
+function operate(firstOperand, secondOperand, operator) {
+
+    switch (operator) {
+        case "add":
+            add(firstOperand, secondOperand);
+            break;
+        case "-":
+            subtract(firstOperand, secondOperand);
+            break;
+        case "/":
+            divide(firstOperand, secondOperand);
+            break;
+        case "*":
+            multiply(firstOperand, secondOperand);
+            break;
+    }
+}
 
 function add(a, b) {
     return a + b
@@ -29,32 +81,3 @@ function divide(a, b) {
 function multiply(a, b) {
     return a * b
 };
-
-numb1 = 2;
-numb2 = 5;
-
-
-
-function operate() {
-
-    switch (operator) {
-        case "+":
-            add(numb1, numb2);
-            break;
-        case "-":
-            subtract(numb1, numb2);
-            break;
-        case "/":
-            divide(numb1, numb2);
-            break;
-        case "*":
-            multiply(numb1, numb2);
-            break;
-    }
-}
-
-
-console.log(add(numb1, numb2));
-console.log(subtract(numb1, numb2));
-console.log(divide(numb1, numb2));
-console.log(multiply(numb1, numb2));
