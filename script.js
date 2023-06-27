@@ -1,69 +1,103 @@
 const body = document.querySelector('body');
-const screenDisplay = document.querySelector('.numbers-display')
+const previousOperandDisplay = document.querySelector('.previous-operand')
+const currentOperandDisplay = document.querySelector('.current-operand')
 const numBtn = document.querySelectorAll('.numb-btn');
 const operatorBtn = document.querySelectorAll('.operator')
 const clearBtn = document.querySelector('.clear');
+const equalsBtn = document.querySelector('.equals');
 
 
-let firstOperand = '';
-let secondOperand = '';
-let operator = '';
-let isOpPressed = false;
+ let previousOperand = '';
+ let currentOperand = '';
+ let operator = undefined;
 
-clearBtn.addEventListener('click', clear);
 operatorBtn.forEach(opBtn =>{
-    opBtn.addEventListener('click', function(e) {
-        operator = e.target.textContent;
-        console.log(operator)
+    opBtn.addEventListener('click', function() {
+        operation(opBtn.innerHTML);
+        updateDisplay();
     })
 })
 
-window.onload = () => {screenDisplay.textContent = "0"};
-
-numBtn.forEach(btn => { btn.addEventListener('click', function(e) {
-    inputNumber(e.target.value);
+numBtn.forEach(btn => { btn.addEventListener('click', function() {
+    inputNumber(btn.innerHTML);
+    updateDisplay();
     })
 });
 
+clearBtn.addEventListener('click', btn => {
+    clear();
+    updateDisplay();
+});
+
+equalsBtn.addEventListener('click', btn => {
+    operate();
+    updateDisplay();
+});
+
+// appends number
 function inputNumber(number) {
-    let screenNumber = screenDisplay.textContent;
-    if (screenNumber.length < 12)
-    screenDisplay.textContent = parseInt(screenDisplay.textContent+=number).toString(); // it doesnt work if you assign a variable to screenDisplay.innerHTML;
-   // parseInt to get rid of 0
-    //if(isOpPressed == true);
+    if((currentOperand.includes(".")) && number === ".") return
+
+    if (currentOperand.length < 12)
+    currentOperand = (currentOperand+=number).toString(); // it doesnt work if you assign a variable to currentOperand.innerHTML;
+
 };
 
-// //function setOperator(e) {
-//     firstOperand = screenDisplay.textContent;
-//     console.log(firstOperand)
-//     operator = e.target.class;
-//     console.log(operator);
-// }
+function operation(operator) {
+    if (currentOperand === '') return
+    if (previousOperand !== '') {
+        operate()
+    }
+    operator = operator;
+    console.log(operator);
+    previousOperand = currentOperand;
+    console.log(previousOperand); // stores old value
+    currentOperand = ''; // clears screen
+}
+
+function updateDisplay () {
+    currentOperandDisplay.innerHTML = currentOperand;
+    previousOperandDisplay.innerHTML = previousOperand;
+    if (operator !== undefined){    
+        previousOperandDisplay.innerHTML = `${previousOperand} ${operator}`;
+} else {
+    previousOperandDisplay.innerHTML = '';
+}
+}
+
 
 function clear() {
-    screenDisplay.textContent = '0';
-    firstOperand = '';
-    secondOperand = '';
+    currentOperand = '';
+    previousOperand = '';
+    operator = undefined;
 }
 
 
 
-function operate(firstOperand, secondOperand, operator) {
+function operate() {
+    let result;
+    currentOperand = parseFloat(currentOperand);
+    previousOperand = parseFloat(previousOperand);
+
+    //if(isNaN(currentOperand) || isNaN(previousOperand)) return;
 
     switch (operator) {
-        case "add":
-            add(firstOperand, secondOperand);
+        case "+":
+            result = add(previousOperand, currentOperand);
             break;
         case "-":
-            subtract(firstOperand, secondOperand);
+            result = subtract(previousOperand, currentOperand);
             break;
-        case "/":
-            divide(firstOperand, secondOperand);
+        case "÷":
+            result = divide(previousOperand, currentOperand);
             break;
-        case "*":
-            multiply(firstOperand, secondOperand);
+        case "x":
+            result = multiply(previousOperand, currentOperand);
             break;
     }
+    currentOperand = result;
+    operator = undefined;
+    previousOperand = '';
 }
 
 function add(a, b) {
