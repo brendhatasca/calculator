@@ -1,87 +1,80 @@
-const body = document.querySelector('body');
-const previousOperandDisplay = document.querySelector('.previous-operand')
-const currentOperandDisplay = document.querySelector('.current-operand')
-const numBtn = document.querySelectorAll('.numb-btn');
-const operatorBtn = document.querySelectorAll('.operator')
-const clearBtn = document.querySelector('.clear');
-const equalsBtn = document.querySelector('.equals');
+const previousOperandScreen = document.querySelector('.previous-operand');
+const currentOperandScreen = document.querySelector('.current-operand');
+const numberBtns = document.querySelectorAll('[data-number]');
+const operationBtns = document.querySelectorAll('[data-operator]');
+const allClear = document.querySelector('.clear');
+const equals = document.querySelector('.equals');
+const del = document.querySelector('.delete');
+
+let currentOperand = '';
+let previousOperand = '';
+let currentOperation = undefined;
+let isEqualsPressed = false;
 
 
- let previousOperand = '';
- let currentOperand = '';
- let operator = undefined;
-
-operatorBtn.forEach(opBtn =>{
-    opBtn.addEventListener('click', function() {
-        operation(opBtn.innerHTML);
-        updateDisplay();
+numberBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        inputNumber(btn.innerHTML)
     })
-})
+}) 
 
-numBtn.forEach(btn => { btn.addEventListener('click', function() {
-    inputNumber(btn.innerHTML);
-    updateDisplay();
+operationBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        isEqualsPressed = true;
+        chooseOperation(btn.innerHTML)
     })
-});
+}) 
 
-clearBtn.addEventListener('click', btn => {
-    clear();
-    updateDisplay();
-});
-
-equalsBtn.addEventListener('click', btn => {
-    operate();
-    updateDisplay();
-});
-
-// appends number
-function inputNumber(number) {
-    if((currentOperand.includes(".")) && number === ".") return
-
-    if (currentOperand.length < 12)
-    currentOperand = (currentOperand+=number).toString(); // it doesnt work if you assign a variable to currentOperand.innerHTML;
-
-};
-
-function operation(operator) {
-    if (currentOperand === '') return
-    if (previousOperand !== '') {
-        operate()
-    }
-    operator = operator;
-    console.log(operator);
-    previousOperand = currentOperand;
-    console.log(previousOperand); // stores old value
-    currentOperand = ''; // clears screen
-}
-
-function updateDisplay () {
-    currentOperandDisplay.innerHTML = currentOperand;
-    previousOperandDisplay.innerHTML = previousOperand;
-    if (operator !== undefined){    
-        previousOperandDisplay.innerHTML = `${previousOperand} ${operator}`;
-} else {
-    previousOperandDisplay.innerHTML = '';
-}
-}
-
+allClear.addEventListener('click', clear);
+del.addEventListener('click', deleteLastNumber);
+equals.addEventListener('click', evaluate);
 
 function clear() {
     currentOperand = '';
     previousOperand = '';
+    currentOperandScreen.textContent = '';
+    previousOperandScreen.textContent = '';
     operator = undefined;
+} 
+
+function deleteLastNumber() {
+    currentOperandScreen.innerHTML = currentOperandScreen.innerHTML.slice(0, -1)
+} 
+
+function inputNumber(number) {
+    if(currentOperandScreen.innerHTML == "Error") {
+        clear();
+    }
+
+    if(currentOperandScreen.innerHTML.includes(".") && number === ".") return;
+
+    if(currentOperandScreen.innerHTML.length < 16)
+    currentOperandScreen.innerHTML = (currentOperandScreen.innerHTML).toString() + number.toString();
+
 }
 
+function chooseOperation (operator) {
+    if(previousOperand !== '' && currentOperandScreen.innerHTML === ''){
+         currentOperation = operator
+         previousOperandScreen.innerHTML = `${previousOperand} ${currentOperation}`;
+         return
+    }else if (previousOperand !== '') {
+         evaluate()
+     }  
+     currentOperation = operator;
+     previousOperand = currentOperandScreen.innerHTML;
+     currentOperandScreen.innerHTML = '';
+     previousOperandScreen.innerHTML = `${previousOperand} ${currentOperation}`;
+ }
 
 
-function operate() {
+function evaluate() {
+    if (currentOperation === undefined) return;
     let result;
-    currentOperand = parseFloat(currentOperand);
-    previousOperand = parseFloat(previousOperand);
+    previousOperand = parseFloat(previousOperand)
+    currentOperand = parseFloat(currentOperandScreen.innerHTML);
 
-    //if(isNaN(currentOperand) || isNaN(previousOperand)) return;
-
-    switch (operator) {
+    switch (currentOperation) {
         case "+":
             result = add(previousOperand, currentOperand);
             break;
@@ -89,16 +82,29 @@ function operate() {
             result = subtract(previousOperand, currentOperand);
             break;
         case "÷":
-            result = divide(previousOperand, currentOperand);
+            if(currentOperand === 0) {
+                result = "Error"
+            } else
+            {result = divide(previousOperand, currentOperand)};
             break;
         case "x":
             result = multiply(previousOperand, currentOperand);
             break;
+        default:
+            return;
     }
+
+    if (isEqualsPressed == true) {
+        previousOperandScreen.innerHTML = `${previousOperand} ${currentOperation} ${currentOperand} =`
+        currentOperandScreen.innerHTML = result;
+    }
+
     currentOperand = result;
-    operator = undefined;
+    currentOperandScreen.innerHTML = result;
+    currentOperation = undefined;
     previousOperand = '';
 }
+
 
 function add(a, b) {
     return a + b

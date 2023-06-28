@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script-2.js" defer></script>
+    <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css">
     <title>Calculator</title>
 </head>
@@ -15,36 +15,24 @@
         <div class="current-operand"></div>
     </div>
 
-    <div class="keyboard">
-        <div class="numbers-keyboard">
+        <button class="clear span-two">C</button>
+        <button class="delete">DEL</button>
+        <button data-operator class="add operator">+</button>
             <button data-number>1</button>
             <button data-number>2</button>
             <button data-number>3</button>
-            <br>
+        <button data-operator class="subtract operator">-</button>
             <button data-number>4</button>
             <button data-number>5</button>
             <button data-number>6</button>
-            <br>
+            <button data-operator class="divide operator">÷</button>
             <button data-number>7</button>
             <button data-number>8</button>
             <button data-number>9</button>
-            <br>
+        <button data-operator class="multiply operator">x</button>
             <button data-number>0</button>
             <button data-number>.</button>
-        </div>
-        <br>
-        <div class="operators">
-            <button data-operator class="add">+</button>
-            <button data-operator class="subtract">-</button>
-            <button data-operator class="divide">÷</button>
-            <button data-operator class="multiply">x</button>
-            <button class="equals">=</button>
-            <button class="clear">C</button>
-            <button class="delete">DEL</button>
-
-        </div>
-
-    </div>
+            <button class="equals span-two">=</button>
 </div>
 </body>
 </html>
